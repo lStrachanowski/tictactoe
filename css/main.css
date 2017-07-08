@@ -1,0 +1,98 @@
+
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+
+body{
+  background-color: #A5AAD9;
+}
+.containerColor{
+  height: 20vh;
+  display: flex;
+  justify-content:center;
+  align-content:center;
+  flex-direction:column;
+  font-size: 60px;
+  transition: font-size 0.5s ,color 0.5s;
+  color: rgb(255, 255, 255);
+}
+.containerColor:hover{
+  font-size: 90px;
+  font-weight: bold;
+  color: rgb(233, 178, 113);
+  cursor: pointer;
+}
+.row{
+  text-align: center;
+}
+
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
+.noPading{
+  padding-left: 0px;
+  padding-right: 0px;
+
+}
+.optionBox{
+  margin-top: 2%;
+  display: block;
+  font-size: 25px;
+  color: rgb(255, 255, 255);
+}
+
+.clearStyle{
+  clear:both;
+}
+
+.selectPlayer{
+  display: inline-block;
+  font-size: 65px;
+  color: rgb(255, 255, 255);
+  transition: 0.5s;
+  margin: 1%;
+}
+.selectPlayer:hover{
+  transform:rotate(360deg) scale(1.5,1.5);
+  color: rgb(14, 218, 142);
+  cursor: pointer;
+}
+
+.selectPosition{
+    margin-top: 1%;
+}
+
+.boardContainerHide{
+  opacity: 0;
+  display: none;
+  transition: opacity 0.5s linear;
+}
+
+.boardContainerShow{
+  opacity: 1.0;
+  display: block;
+}
+
+#squareNr1, #squareNr4{
+  border-bottom:  7px solid rgba(255, 255, 255, 0.7);
+  border-right:   7px solid rgba(255, 255, 255, 0.7);
+}
+
+#squareNr2, #squareNr5{
+  border-bottom:  7px solid rgba(255, 255, 255, 0.7);
+  border-right:   7px solid rgba(255, 255, 255, 0.7);
+}
+#squareNr3, #squareNr6{
+  border-bottom:  7px solid rgba(255, 255, 255, 0.7);
+}
+
+#squareNr7 {
+  border-right:   7px solid rgba(255, 255, 255, 0.7);
+}
+#squareNr8{
+  border-right:   7px solid rgba(255, 255, 255, 0.7);
+}
