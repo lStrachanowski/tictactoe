@@ -7,6 +7,7 @@
 
 body{
   background-color: #A5AAD9;
+  padding-top: 30px;
 }
 .containerColor{
   height: 20vh;
@@ -71,13 +72,18 @@ body{
   font-size: 90px;
   color: rgb(14, 218, 142);
 }
+
+.errorSelected:hover, .errorSelected{
+  color: rgb(194, 34, 24);
+}
+
 .boardContainerHide{
   display: none;
 }
 
 .scoreStyle{
   margin-top: 1%;
-  font-size: 25px;
+  font-size: 32px;
   color: rgb(255, 255, 255);
 }
 
