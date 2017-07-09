@@ -66,15 +66,13 @@ body{
     margin-top: 1%;
 }
 
-.boardContainerHide{
-  opacity: 0;
-  display: none;
-  transition: opacity 0.5s linear;
+.selectedPlayer{
+  line-height: 50px;
+  font-size: 90px;
+  color: rgb(14, 218, 142);
 }
-
-.boardContainerShow{
-  opacity: 1.0;
-  display: block;
+.boardContainerHide{
+  display: none;
 }
 
 #squareNr1, #squareNr4{
