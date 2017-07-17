@@ -41,17 +41,27 @@ $(document).ready(function() {
 
 
   $("div.containerColor").click(function() {
+
     // Is pushing clicked Id number to playerArr, which is storing ids clicked by player.
     var currIdNum = (this.id).split("");
     var currNum = Number(currIdNum[currIdNum.length - 1]);
     if (allNumbers.indexOf(currNum) != -1) {
-      playerArr.push(currNum);
       allNumbers[currNum] = 0;
       // Is displaying x or o on the board.
       if (player === "x") {
         if(turn === "x"){
-          searchMatchCombination(compWinComb,currNum);
-          console.log(compWinComb);
+          playerArr.push(currNum);
+
+          searchMatchNumber(compWinComb,currNum);
+          if(playerArr.length >= 2){
+            if(playerArr.length === 2){
+
+
+
+            }
+
+          }
+
           $("#" + this.id).html("x");
           turn = "o";
         } else {
@@ -61,8 +71,10 @@ $(document).ready(function() {
       }
       if (player === "o") {
         if(turn === "o"){
+          playerArr.push(currNum);
+
           searchMatchCombination(compWinComb,currNum);
-          console.log(compWinComb);
+
           $("#" + this.id).html("o");
           turn = "x";
         }else {
@@ -84,8 +96,44 @@ $(document).ready(function() {
 });
 
 
+// function is lookig for last missing number to get win combination
+// arr - remaining win combinations array , pArr - array of numbers used by player.
+
+function findBlockingNumber(arr,pArr){
+  var combArr = arr;
+  var playerArrComb = pArr;
+
+  for(var i=0; i<combArr.length; i++){
+     t = combArr[i].filter(function(e){
+     return  this.indexOf(e) < 0 ;
+   },playerArrComb);
+    if(t.length === 1){
+      console.log(t);
+    }
+  }
+}
+
+var tempArrComb = [5,1,6,8];
+findPairs(tempArrComb);
+//function is returnig all two digit combinations from given array
+function findPairs(arr){
+  var result = [];
+  var combArr = arr;
+  for(var t=0; t<combArr.length ; t++){
+    var r = combArr[t];
+    for(var h = t+1 ; h<combArr.length; h++){
+      var te2 = combArr[h];
+      var te = [r,te2];
+      result.push(te);
+    }
+  }
+  console.log(result);
+}
+
+
 // Function is looking for number num in array arr. If match will be found then element with match will be deleted form array.
-function searchMatchCombination(arr,num){
+// Function removes from array combination of nubers with num.
+function searchMatchNumber(arr,num){
   var currArr = arr;
   var i = currArr.length-1;
   while(i>=0){
