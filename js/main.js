@@ -1,6 +1,7 @@
 $(document).ready(function() {
 
-  var player, comp, allNumbers, winCombinations, playerArr, compArr, turn,playerWinComb,compWinComb;
+  var player, comp, allNumbers, winCombinations, playerArr, compArr, turn, playerWinComb, compWinComb, blockNum;
+  blockNum = 0
   player = ""; //storing sign choosen by player
   comp = ""; //storing sign od computer
   turn = ""; //storing value , whos turn is it.
@@ -16,6 +17,7 @@ $(document).ready(function() {
     [3, 5, 7]
   ];
   playerArr = [];
+  compArr = [];
   playerWinComb = winCombinations.slice("");
   compWinComb = winCombinations.slice("");
 
@@ -47,41 +49,52 @@ $(document).ready(function() {
     var currNum = Number(currIdNum[currIdNum.length - 1]);
     if (allNumbers.indexOf(currNum) != -1) {
       allNumbers[currNum] = 0;
+
       // Is displaying x or o on the board.
       if (player === "x") {
-        if(turn === "x"){
+        if (turn === "x") {
           playerArr.push(currNum);
+          compWinComb = searchMatchNumber(compWinComb, currNum);
+          $("#" + this.id).html("x");
+          turn = "o";
 
-          searchMatchNumber(compWinComb,currNum);
-          if(playerArr.length >= 2){
-            if(playerArr.length === 2){
-
-
-
-            }
-
+          //When user will select center of board then use one from 4 comb numbers.
+          if(currNum === 5 && playerArr.length == 1){
+            var comb = [1,3,7,9];
+            var randNum =  comb[Math.floor(Math.random()*comb.length)];
+            compArr.push(randNum);
+            playerWinComb = searchMatchNumber(playerWinComb, randNum);
+              allNumbers[randNum] = 0;
+            $("#squareNr" + randNum).html("o");
+            turn = "x";
           }
-
-          $("#" + this.id).html("x");
-          turn = "o";
-        } else {
-          $("#" + this.id).html("o");
-          turn = "x";
+          else if(playerArr.length == 2){
+            var fBlock = findBlockingNumber(playerWinComb,playerArr);
+            compArr.push(fBlock);
+            allNumbers[fBlock] = 0;
+              $("#squareNr" + fBlock).html("o");
+              turn = "x";
+          }
+            else if (playerArr.length > 2) {
+            var fBlock = findBlockingNumber(playerWinComb,playerArr);
+            compArr.push(fBlock);
+            allNumbers[fBlock] = 0;
+            playerWinComb = searchMatchNumber(playerWinComb,fBlock);
+            $("#squareNr" + fBlock).html("o");
+            turn = "x";
+          }
         }
       }
-      if (player === "o") {
-        if(turn === "o"){
-          playerArr.push(currNum);
-
-          searchMatchCombination(compWinComb,currNum);
-
-          $("#" + this.id).html("o");
-          turn = "x";
-        }else {
-          $("#" + this.id).html("x");
-          turn = "o";
-        }
-      }
+      console.log(allNumbers);
+      // if (player === "o") {
+      //   if (turn === "o") {
+      //     $("#" + this.id).html("o");
+      //     turn = "x";
+      //   } else {
+      //     $("#" + this.id).html("x");
+      //     turn = "o";
+      //   }
+      // }
 
     } else {
       // If player clicked Id , which was already clicked , sign is changing color to red for 0.7 sec.
@@ -99,47 +112,49 @@ $(document).ready(function() {
 // function is lookig for last missing number to get win combination
 // arr - remaining win combinations array , pArr - array of numbers used by player.
 
-function findBlockingNumber(arr,pArr){
+function findBlockingNumber(arr, pArr) {
   var combArr = arr;
   var playerArrComb = pArr;
-
-  for(var i=0; i<combArr.length; i++){
-     t = combArr[i].filter(function(e){
-     return  this.indexOf(e) < 0 ;
-   },playerArrComb);
-    if(t.length === 1){
+  var t = 0;
+  for (var i = 0; i < combArr.length; i++) {
+    t = combArr[i].filter(function(e) {
+      return this.indexOf(e) < 0;
+    }, playerArrComb);
+    if (t.length === 1) {
       console.log(t);
+      return t;
     }
   }
 }
 
-var tempArrComb = [5,1,6,8];
-findPairs(tempArrComb);
+
 //function is returnig all two digit combinations from given array
-function findPairs(arr){
+function findPairs(arr) {
   var result = [];
   var combArr = arr;
-  for(var t=0; t<combArr.length ; t++){
-    var r = combArr[t];
-    for(var h = t+1 ; h<combArr.length; h++){
-      var te2 = combArr[h];
-      var te = [r,te2];
-      result.push(te);
+  for (var i = 0; i < combArr.length; i++) {
+    var r = combArr[i];
+    for (var j = i + 1; j < combArr.length; j++) {
+      var a = combArr[j];
+      var res = [r, a];
+      result.push(res);
     }
   }
   console.log(result);
+  return result;
 }
 
 
 // Function is looking for number num in array arr. If match will be found then element with match will be deleted form array.
 // Function removes from array combination of nubers with num.
-function searchMatchNumber(arr,num){
+function searchMatchNumber(arr, num) {
   var currArr = arr;
-  var i = currArr.length-1;
-  while(i>=0){
-    if(currArr[i].indexOf(num) != -1){
-      currArr.splice(i,1);
+  var i = currArr.length - 1;
+  while (i >= 0) {
+    if (currArr[i].indexOf(num) != -1) {
+      currArr.splice(i, 1);
     }
     i--;
   }
+  return currArr;
 }
