@@ -21,8 +21,6 @@ $(document).ready(function() {
   playerWinComb = winCombinations.slice("");
   compWinComb = winCombinations.slice("");
 
-
-
   // selecting x as player singn
   $("#playerX").click(function() {
     $("#boardContainer").fadeIn(1500).removeClass("boardContainerHide");
@@ -43,7 +41,6 @@ $(document).ready(function() {
     $("#displayMessage").hide().html("You are playing as: <div class='selectedPlayer'>" + player + "</div>").slideDown(500);
   });
 
-
   $("div.containerColor").click(function() {
     // Is pushing clicked Id number to playerArr, which is storing ids clicked by player.
     var currIdNum = (this.id).split("");
@@ -56,53 +53,68 @@ $(document).ready(function() {
           playerArr.push(currNum);
           allNumbers[currNum] = 0;
           compWinComb = searchMatchNumber(compWinComb, currNum);
-          console.log(compWinComb);
-          console.log("compWinComb");
           $("#" + this.id).html("x");
           turn = "o";
-
+          findBlockingNumber(playerWinComb,playerArr,1);
           //When user will select center of board then use one from 4 comb numbers.
           if (currNum === 5 && playerArr.length == 1) {
             var comb = [1, 3, 7, 9];
             var randNum = comb[Math.floor(Math.random() * comb.length)];
             compArr.push(randNum);
-            var searchVal =searchMatchNumber(playerWinComb, Number(randNum));
-            console.log(searchVal);
+            var searchVal = searchMatchNumber(playerWinComb, Number(randNum));
             playerWinComb = searchVal;
             allNumbers[randNum] = 0;
             $("#squareNr" + randNum).html("o");
             turn = "x";
           }
-          // if (currNum != 5 && playerArr.length == 1) {
-          //   var tempArr = allNumbers.filter(function(e) {
-          //     if (e != 0) {
-          //       return e
-          //     }
-          //   });
-          //   console.log(tempArr);
-          //   randNum = Math.floor(Math.random() * tempArr.length);
-          //   compArr.push(randNum);
-          // }
-          if (playerArr.length == 2) {
-            var fBlock = findBlockingNumber(playerWinComb, playerArr);
-            compArr.push(fBlock);
-            allNumbers[fBlock] = 0;
-            var searchVal = searchMatchNumber(playerWinComb, Number(fBlock));
-            console.log(searchVal);
+          if (currNum != 5 && playerArr.length == 1) {
+            // Level hard
+            // var searchVal = searchMatchNumber(playerWinComb, Number(5));
+            // compArr.push(5);
+            // allNumbers[5] = 0;
+            // $("#squareNr" + 5).html("o");
+            // turn = "x";
+
+            // Easy level
+            var tempArr = allNumbers.filter(function(e) {
+              if (e != 0) {
+                return e
+              }
+            });
+            var randNum = Math.floor(Math.random() * tempArr.length);
+            compArr.push(randNum);
+            var searchVal =searchMatchNumber(playerWinComb, Number(randNum));
+            allNumbers[randNum] = 0;
             playerWinComb = searchVal;
-            $("#squareNr" + fBlock).html("o");
+            console.log(allNumbers);
+            $("#squareNr" + randNum).html("o");
             turn = "x";
 
-          } else if (playerArr.length > 2) {
-            // var pairComb = findPairs(playerArr);
-            // console.log("playerArr");
-            console.log(playerArr);
-            var fBlock = findBlockingNumber(playerWinComb, playerArr);
-            compArr.push(fBlock);
-            allNumbers[fBlock] = 0;
-            var searchVal = searchMatchNumber(playerWinComb, Number(fBlock));
-            console.log(searchVal);
-            playerWinComb = searchVal;
+          }
+          if (playerArr.length >= 2) {
+            var fBlock = findBlockingNumber(playerWinComb, playerArr,0);
+            console.log(fBlock);
+            if (fBlock != undefined) {
+              compArr.push(fBlock);
+              allNumbers[fBlock] = 0;
+              var searchVal = searchMatchNumber(playerWinComb, Number(fBlock));
+              playerWinComb = searchVal;
+            } else {
+              var tempArr = allNumbers.filter(function(e) {
+                if (e != 0) {
+                  return e
+                }
+              });
+              console.log(tempArr);
+              var randNum = Math.floor(Math.random() * tempArr.length);
+              fNum = tempArr[randNum];
+              console.log(fNum);
+              compArr.push(fNum);
+              var searchVal = searchMatchNumber(playerWinComb, Number(fNum));
+              allNumbers[fNum] = 0;
+              playerWinComb = searchVal;
+              fBlock = fNum;
+            }
 
             $("#squareNr" + fBlock).html("o");
             turn = "x";
@@ -132,10 +144,11 @@ $(document).ready(function() {
 
 });
 
-
 // function is lookig for last missing number to get win combination
 // arr - remaining win combinations array , pArr - array of numbers used by player.
-function findBlockingNumber(arr, pArr) {
+// opt - if 0 selected than fuction is finding blocking number
+// opt - if 1 selected than function is checking if user has winning combination
+function findBlockingNumber(arr, pArr,opt) {
   var combArr = arr;
   var playerArrComb = pArr;
   var t = 0;
@@ -143,29 +156,19 @@ function findBlockingNumber(arr, pArr) {
     t = combArr[i].filter(function(e) {
       return this.indexOf(e) < 0;
     }, playerArrComb);
-    if (t.length === 1) {
-      // console.log(t);
-      return t;
+    if(opt === 0){
+      if (t.length === 1) {
+        return t;
+      }
+    }
+    if(opt === 1){
+      if (t.length === 0 ) {
+        console.log(combArr[i]);
+        console.log(combArr[i] + " player won!!!!");
+      }
     }
   }
 }
-
-
-//function is returnig all two digit combinations from given array
-// function findPairs(arr) {
-//   var result = [];
-//   var combArr = arr;
-//   for (var i = 0; i < combArr.length; i++) {
-//     var r = combArr[i];
-//     for (var j = i + 1; j < combArr.length; j++) {
-//       var a = combArr[j];
-//       var res = [r, a];
-//       result.push(res);
-//     }
-//   }
-//   return result;
-// }
-
 
 // Function is looking for number num in array arr. If match will be found then element with match will be deleted form array.
 // Function removes from array combination of nubers with num.
