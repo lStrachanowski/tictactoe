@@ -9,6 +9,18 @@ body{
   background-color: #A5AAD9;
   padding-top: 30px;
 }
+#new-link-line {
+    position: absolute;
+    width: 15px;
+    background-color: rgba(221, 73, 0,0.9);
+    z-index: 100;
+    -webkit-transform-origin: top left;
+    -moz-transform-origin: top left;
+    -o-transform-origin: top left;
+    -ms-transform-origin: top left;
+    transform-origin: top left;
+}
+
 .containerColor{
   height: 20vh;
   display: flex;

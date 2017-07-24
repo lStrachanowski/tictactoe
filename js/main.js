@@ -55,7 +55,7 @@ $(document).ready(function() {
           compWinComb = searchMatchNumber(compWinComb, currNum);
           $("#" + this.id).html("x");
           turn = "o";
-          findBlockingNumber(playerWinComb,playerArr,1);
+          findBlockingNumber(playerWinComb, playerArr, 1);
           //When user will select center of board then use one from 4 comb numbers.
           if (currNum === 5 && playerArr.length == 1) {
             var comb = [1, 3, 7, 9];
@@ -83,17 +83,15 @@ $(document).ready(function() {
             });
             var randNum = Math.floor(Math.random() * tempArr.length);
             compArr.push(randNum);
-            var searchVal =searchMatchNumber(playerWinComb, Number(randNum));
+            var searchVal = searchMatchNumber(playerWinComb, Number(randNum));
             allNumbers[randNum] = 0;
             playerWinComb = searchVal;
-            console.log(allNumbers);
             $("#squareNr" + randNum).html("o");
             turn = "x";
 
           }
           if (playerArr.length >= 2) {
-            var fBlock = findBlockingNumber(playerWinComb, playerArr,0);
-            console.log(fBlock);
+            var fBlock = findBlockingNumber(playerWinComb, playerArr, 0);
             if (fBlock != undefined) {
               compArr.push(fBlock);
               allNumbers[fBlock] = 0;
@@ -105,10 +103,8 @@ $(document).ready(function() {
                   return e
                 }
               });
-              console.log(tempArr);
               var randNum = Math.floor(Math.random() * tempArr.length);
               fNum = tempArr[randNum];
-              console.log(fNum);
               compArr.push(fNum);
               var searchVal = searchMatchNumber(playerWinComb, Number(fNum));
               allNumbers[fNum] = 0;
@@ -144,11 +140,67 @@ $(document).ready(function() {
 
 });
 
+
+//Function is drawing line when player or comp won the game
+function drawLine(arr){
+
+  this.temp = arr;
+  var a1 = document.getElementById("squareNr" + temp[0]);
+  var b1 = a1.getBoundingClientRect();
+  var linkLine = $('<div id="new-link-line"></div>').appendTo('body');
+  var cLength = Math.sqrt(Math.pow((b1.bottom-b1.top),2)+Math.pow((b1.right-b1.left),2));
+  var angle = (180/ Math.PI) * Math.acos((b1.bottom-b1.top)/cLength);
+  if (temp[0] == 1 && temp[2] == 7 || temp[0] == 2 && temp[2] == 8 || temp[0] == 3 && temp[2] == 9) {
+    linkLine
+    .css('top', b1.top)
+    .css('left', b1.left + ((b1.right-b1.left)/2)-10);
+    $('#new-link-line')
+    .css('height', (b1.bottom - b1.top) * 3);
+  }
+  if(temp[0] == 1 && temp[2] == 3 || temp[0] == 4 && temp[2] == 6 || temp[0] == 7 && temp[2] == 9){
+    linkLine
+    .css('top', (b1.top)-15+((b1.bottom-b1.top)/2))
+    .css('left', b1.left);
+    $('#new-link-line')
+    .css('height', 15)
+    .css('width',((b1.right-b1.left)*3));
+  }
+  if(temp[0] == 1 && temp[2] == 9){
+
+    linkLine
+    .css('top', b1.top)
+    .css('left', b1.left);
+    $('#new-link-line')
+    .css('height', cLength * 3)
+    .css('-webkit-transform', 'rotate(' + (-angle) + 'deg)')
+    .css('-moz-transform', 'rotate(' + (-angle) + 'deg)')
+    .css('-o-transform', 'rotate(' + (-angle) + 'deg)')
+    .css('-ms-transform', 'rotate(' + (-angle) + 'deg)')
+    .css('transform', 'rotate(' + (-angle) + 'deg)');
+  }
+  if(temp[0] == 3 && temp[2] == 7){
+    linkLine
+    .css('top', b1.top)
+    .css('left', b1.right-15);
+    $('#new-link-line')
+    .css('height', cLength * 3)
+    .css('-webkit-transform', 'rotate(' + angle + 'deg)')
+    .css('-moz-transform', 'rotate(' + angle + 'deg)')
+    .css('-o-transform', 'rotate(' + angle + 'deg)')
+    .css('-ms-transform', 'rotate(' + angle + 'deg)')
+    .css('transform', 'rotate(' + angle + 'deg)');
+  }
+
+}
+
+
+
+
 // function is lookig for last missing number to get win combination
 // arr - remaining win combinations array , pArr - array of numbers used by player.
 // opt - if 0 selected than fuction is finding blocking number
 // opt - if 1 selected than function is checking if user has winning combination
-function findBlockingNumber(arr, pArr,opt) {
+function findBlockingNumber(arr, pArr, opt) {
   var combArr = arr;
   var playerArrComb = pArr;
   var t = 0;
@@ -156,15 +208,19 @@ function findBlockingNumber(arr, pArr,opt) {
     t = combArr[i].filter(function(e) {
       return this.indexOf(e) < 0;
     }, playerArrComb);
-    if(opt === 0){
+    if (opt === 0) {
       if (t.length === 1) {
         return t;
       }
     }
-    if(opt === 1){
-      if (t.length === 0 ) {
-        console.log(combArr[i]);
+    if (opt === 1) {
+      if (t.length === 0 && combArr[i].length === 3) {
         console.log(combArr[i] + " player won!!!!");
+        var temp = combArr[i].slice();
+        for (var j = 0; j < temp.length; j++) {
+          $("#squareNr" + temp[j]).removeClass("containerColor").addClass("containerColor selectedPlayer");
+        }
+        drawLine(temp);
       }
     }
   }
