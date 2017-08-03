@@ -81,14 +81,13 @@ $(document).ready(function() {
                 return e
               }
             });
-            var randNum = Math.floor(Math.random() * tempArr.length);
+            var randNum = tempArr[Math.floor((Math.random() * tempArr.length))];
             compArr.push(randNum);
             var searchVal = searchMatchNumber(playerWinComb, Number(randNum));
             allNumbers[randNum] = 0;
             playerWinComb = searchVal;
             $("#squareNr" + randNum).html("o");
             turn = "x";
-
           }
           if (playerArr.length >= 2) {
             var fBlock = findBlockingNumber(playerWinComb, playerArr, 0);
@@ -192,9 +191,6 @@ function drawLine(arr){
   }
 
 }
-
-
-
 
 // function is lookig for last missing number to get win combination
 // arr - remaining win combinations array , pArr - array of numbers used by player.
