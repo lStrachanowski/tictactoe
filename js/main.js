@@ -1,10 +1,11 @@
 $(document).ready(function() {
 
-  var player, comp, allNumbers, winCombinations, playerArr, compArr, turn, playerWinComb, compWinComb, blockNum;
+  var player, comp, allNumbers, winCombinations, playerArr, compArr, turn, playerWinComb, compWinComb, blockNum,selectedLevel;
   blockNum = 0
   player = ""; //storing sign choosen by player
   comp = ""; //storing sign od computer
   turn = ""; //storing value , whos turn is it.
+  selectedLevel = "";
   allNumbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
   winCombinations = [
     [1, 2, 3],
@@ -21,6 +22,20 @@ $(document).ready(function() {
   playerWinComb = winCombinations.slice("");
   compWinComb = winCombinations.slice("");
 
+  //Easy level selected
+  $("#easyLevel").click(function(){
+    selectedLevel ="easy";
+    $("#displayMessage").fadeIn(500).removeClass("boardContainerHide");
+    $("#levelBox").hide();
+  });
+
+  //Hard level selected
+  $("#hardLevel").click(function(){
+    selectedLevel ="hard";
+    $("#displayMessage").fadeIn(500).removeClass("boardContainerHide");
+    $("#levelBox").hide();
+  });
+
   // selecting x as player singn
   $("#playerX").click(function() {
     $("#boardContainer").fadeIn(1500).removeClass("boardContainerHide");
@@ -28,7 +43,7 @@ $(document).ready(function() {
     player = "x";
     comp = "o";
     turn = "x";
-    $("#displayMessage").hide().html("You are playing as: <div class='selectedPlayer'>" + player + "</div>").slideDown(500);
+    $("#displayMessage").hide().html("Level: " +selectedLevel + ".   You are playing as: <div class='selectedPlayer'>" + player + "</div>").slideDown(500);
   });
 
   // selecting o as player singn
@@ -38,7 +53,7 @@ $(document).ready(function() {
     player = "o";
     comp = "x";
     turn = "o";
-    $("#displayMessage").hide().html("You are playing as: <div class='selectedPlayer'>" + player + "</div>").slideDown(500);
+    $("#displayMessage").hide().html("Level: " +selectedLevel + ".   You are playing as: <div class='selectedPlayer'>" + player + "</div>").slideDown(500);
   });
 
   $("div.containerColor").click(function() {
@@ -69,25 +84,31 @@ $(document).ready(function() {
           }
           if (currNum != 5 && playerArr.length == 1) {
             // Level hard
-            // var searchVal = searchMatchNumber(playerWinComb, Number(5));
-            // compArr.push(5);
-            // allNumbers[5] = 0;
-            // $("#squareNr" + 5).html("o");
-            // turn = "x";
+            if(selectedLevel ==="hard"){
+              var searchVal = searchMatchNumber(playerWinComb, Number(5));
+              compArr.push(5);
+              allNumbers[5] = 0;
+              $("#squareNr" + 5).html("o");
+              turn = "x";
+            }
+
 
             // Easy level
-            var tempArr = allNumbers.filter(function(e) {
-              if (e != 0) {
-                return e
-              }
-            });
-            var randNum = tempArr[Math.floor((Math.random() * tempArr.length))];
-            compArr.push(randNum);
-            var searchVal = searchMatchNumber(playerWinComb, Number(randNum));
-            allNumbers[randNum] = 0;
-            playerWinComb = searchVal;
-            $("#squareNr" + randNum).html("o");
-            turn = "x";
+            if(selectedLevel ==="easy"){
+              var tempArr = allNumbers.filter(function(e) {
+                if (e != 0) {
+                  return e
+                }
+              });
+              var randNum = tempArr[Math.floor((Math.random() * tempArr.length))];
+              compArr.push(randNum);
+              var searchVal = searchMatchNumber(playerWinComb, Number(randNum));
+              allNumbers[randNum] = 0;
+              playerWinComb = searchVal;
+              $("#squareNr" + randNum).html("o");
+              turn = "x";
+            }
+
           }
           if (playerArr.length >= 2) {
             var fBlock = findBlockingNumber(playerWinComb, playerArr, 0);
