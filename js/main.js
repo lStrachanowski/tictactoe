@@ -1,26 +1,26 @@
-$(document).ready(function() {
+var player, comp, allNumbers, winCombinations, playerArr, compArr, turn, playerWinComb, compWinComb, blockNum,selectedLevel,currIdNum,currNum;
+blockNum = 0
+player = ""; //storing sign choosen by player
+comp = ""; //storing sign od computer
+turn = ""; //storing value , whos turn is it.
+selectedLevel = "";
+allNumbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+winCombinations = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9],
+  [1, 4, 7],
+  [2, 5, 8],
+  [3, 6, 9],
+  [1, 5, 9],
+  [3, 5, 7]
+];
+playerArr = [];
+compArr = [];
+playerWinComb = winCombinations.slice("");
+compWinComb = winCombinations.slice("");
 
-  var player, comp, allNumbers, winCombinations, playerArr, compArr, turn, playerWinComb, compWinComb, blockNum,selectedLevel;
-  blockNum = 0
-  player = ""; //storing sign choosen by player
-  comp = ""; //storing sign od computer
-  turn = ""; //storing value , whos turn is it.
-  selectedLevel = "";
-  allNumbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-  winCombinations = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9],
-    [1, 4, 7],
-    [2, 5, 8],
-    [3, 6, 9],
-    [1, 5, 9],
-    [3, 5, 7]
-  ];
-  playerArr = [];
-  compArr = [];
-  playerWinComb = winCombinations.slice("");
-  compWinComb = winCombinations.slice("");
+$(document).ready(function() {
 
   //Easy level selected
   $("#easyLevel").click(function(){
@@ -58,8 +58,8 @@ $(document).ready(function() {
 
   $("div.containerColor").click(function() {
     // Is pushing clicked Id number to playerArr, which is storing ids clicked by player.
-    var currIdNum = (this.id).split("");
-    var currNum = Number(currIdNum[currIdNum.length - 1]);
+    currIdNum = (this.id).split("");
+    currNum = Number(currIdNum[currIdNum.length - 1]);
     if (allNumbers.indexOf(currNum) != -1) {
 
       // Is displaying x or o on the board.
@@ -71,82 +71,20 @@ $(document).ready(function() {
           $("#" + this.id).html("x");
           turn = "o";
           findBlockingNumber(playerWinComb, playerArr, 1);
-          //When user will select center of board then use one from 4 comb numbers.
-          if (currNum === 5 && playerArr.length == 1) {
-            var comb = [1, 3, 7, 9];
-            var randNum = comb[Math.floor(Math.random() * comb.length)];
-            compArr.push(randNum);
-            var searchVal = searchMatchNumber(playerWinComb, Number(randNum));
-            playerWinComb = searchVal;
-            allNumbers[randNum] = 0;
-            $("#squareNr" + randNum).html("o");
-            turn = "x";
-          }
-          if (currNum != 5 && playerArr.length == 1) {
-            // Level hard
-            if(selectedLevel ==="hard"){
-              var searchVal = searchMatchNumber(playerWinComb, Number(5));
-              compArr.push(5);
-              allNumbers[5] = 0;
-              $("#squareNr" + 5).html("o");
-              turn = "x";
-            }
-
-
-            // Easy level
-            if(selectedLevel ==="easy"){
-              var tempArr = allNumbers.filter(function(e) {
-                if (e != 0) {
-                  return e
-                }
-              });
-              var randNum = tempArr[Math.floor((Math.random() * tempArr.length))];
-              compArr.push(randNum);
-              var searchVal = searchMatchNumber(playerWinComb, Number(randNum));
-              allNumbers[randNum] = 0;
-              playerWinComb = searchVal;
-              $("#squareNr" + randNum).html("o");
-              turn = "x";
-            }
-
-          }
-          if (playerArr.length >= 2) {
-            var fBlock = findBlockingNumber(playerWinComb, playerArr, 0);
-            if (fBlock != undefined) {
-              compArr.push(fBlock);
-              allNumbers[fBlock] = 0;
-              var searchVal = searchMatchNumber(playerWinComb, Number(fBlock));
-              playerWinComb = searchVal;
-            } else {
-              var tempArr = allNumbers.filter(function(e) {
-                if (e != 0) {
-                  return e
-                }
-              });
-              var randNum = Math.floor(Math.random() * tempArr.length);
-              fNum = tempArr[randNum];
-              compArr.push(fNum);
-              var searchVal = searchMatchNumber(playerWinComb, Number(fNum));
-              allNumbers[fNum] = 0;
-              playerWinComb = searchVal;
-              fBlock = fNum;
-            }
-
-            $("#squareNr" + fBlock).html("o");
-            turn = "x";
-          }
-
+          compResponse("x");
         }
       }
-      // if (player === "o") {
-      //   if (turn === "o") {
-      //     $("#" + this.id).html("o");
-      //     turn = "x";
-      //   } else {
-      //     $("#" + this.id).html("x");
-      //     turn = "o";
-      //   }
-      // }
+      if (player === "o") {
+        if (turn === "o") {
+          playerArr.push(currNum);
+          allNumbers[currNum] = 0;
+          compWinComb = searchMatchNumber(compWinComb, currNum);
+          $("#" + this.id).html("o");
+          turn = "x";
+          findBlockingNumber(playerWinComb, playerArr, 1);
+          compResponse("o");
+        }
+      }
 
     } else {
       // If player clicked Id , which was already clicked , sign is changing color to red for 0.7 sec.
@@ -160,6 +98,94 @@ $(document).ready(function() {
 
 });
 
+function compResponse(sPlayer){
+  //When user will select center of board then use one from 4 comb numbers.
+  this.selectedPlayer = sPlayer;
+
+  if (currNum === 5 && playerArr.length == 1) {
+    var comb = [1, 3, 7, 9];
+    var randNum = comb[Math.floor(Math.random() * comb.length)];
+    compArr.push(randNum);
+    var searchVal = searchMatchNumber(playerWinComb, Number(randNum));
+    playerWinComb = searchVal;
+    allNumbers[randNum] = 0;
+    if(this.selectedPlayer === "x"){
+      $("#squareNr" + randNum).html("o");
+      turn = "x";
+    }else{
+      $("#squareNr" + randNum).html("x");
+      turn = "o";
+    }
+
+  }
+  if (currNum != 5 && playerArr.length == 1) {
+
+    // Level hard
+    if(selectedLevel ==="hard"){
+      var searchVal = searchMatchNumber(playerWinComb, Number(5));
+      compArr.push(5);
+      allNumbers[5] = 0;
+      if(this.selectedPlayer === "x"){
+        $("#squareNr" + 5).html("o");
+        turn = "x";
+      }else{
+        $("#squareNr" + 5).html("x");
+        turn = "o";
+      }
+
+    }
+
+    // Easy level
+    if(selectedLevel ==="easy"){
+      var tempArr = allNumbers.filter(function(e) {
+        if (e != 0) {
+          return e
+        }
+      });
+      var randNum = tempArr[Math.floor((Math.random() * tempArr.length))];
+      compArr.push(randNum);
+      var searchVal = searchMatchNumber(playerWinComb, Number(randNum));
+      allNumbers[randNum] = 0;
+      playerWinComb = searchVal;
+        if(this.selectedPlayer === "x"){
+          $("#squareNr" + randNum).html("o");
+          turn = "x";
+        }else{
+          $("#squareNr" + randNum).html("x");
+          turn = "o";
+        }
+    }
+  }
+  if (playerArr.length >= 2) {
+    var fBlock = findBlockingNumber(playerWinComb, playerArr, 0);
+    if (fBlock != undefined) {
+      compArr.push(fBlock);
+      allNumbers[fBlock] = 0;
+      var searchVal = searchMatchNumber(playerWinComb, Number(fBlock));
+      playerWinComb = searchVal;
+    } else {
+      var tempArr = allNumbers.filter(function(e) {
+        if (e != 0) {
+          return e
+        }
+      });
+      var randNum = Math.floor(Math.random() * tempArr.length);
+      fNum = tempArr[randNum];
+      compArr.push(fNum);
+      var searchVal = searchMatchNumber(playerWinComb, Number(fNum));
+      allNumbers[fNum] = 0;
+      playerWinComb = searchVal;
+      fBlock = fNum;
+    }
+    if(this.selectedPlayer === "x"){
+      $("#squareNr" + fBlock).html("o");
+      turn = "x";
+    }else{
+      $("#squareNr" + fBlock).html("x");
+      turn = "o";
+    }
+  }
+}
 
 //Function is drawing line when player or comp won the game
 function drawLine(arr){
