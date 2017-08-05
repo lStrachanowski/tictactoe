@@ -6,7 +6,7 @@ comp = ""; //storing sign od computer
 turn = ""; //storing value , whos turn is it.
 selectedLevel = "";
 scoreX = 0;
-scoreY = 0;
+scoreO = 0;
 allNumbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 winCombinations = [
   [1, 2, 3],
@@ -24,7 +24,7 @@ playerWinComb = winCombinations.slice("");
 compWinComb = winCombinations.slice("");
 
 $(document).ready(function() {
-  $("#score").html("x   " + scoreX + " : " + scoreY + "   o");
+  $("#score").html("x   " + scoreX + " : " + scoreO + "   o");
   //Easy level selected
   $("#easyLevel").click(function(){
     selectedLevel ="easy";
@@ -64,7 +64,6 @@ $(document).ready(function() {
     currIdNum = (this.id).split("");
     currNum = Number(currIdNum[currIdNum.length - 1]);
     if (allNumbers.indexOf(currNum) != -1) {
-
       // Is displaying x or o on the board.
       if (player === "x") {
         if (turn === "x") {
@@ -72,9 +71,9 @@ $(document).ready(function() {
           allNumbers[currNum] = 0;
           compWinComb = searchMatchNumber(compWinComb, currNum);
           $("#" + this.id).html("x");
+
+          findBlockingNumber(playerWinComb, playerArr, 1,turn);
           turn = "o";
-          findBlockingNumber(compWinComb, compArr, 1);
-          findBlockingNumber(playerWinComb, playerArr, 1);
           compResponse("x");
         }
       }
@@ -83,11 +82,10 @@ $(document).ready(function() {
           playerArr.push(currNum);
           allNumbers[currNum] = 0;
           compWinComb = searchMatchNumber(compWinComb, currNum);
-
           $("#" + this.id).html("o");
+
+          findBlockingNumber(playerWinComb, playerArr, 1,turn);
           turn = "x";
-          findBlockingNumber(compWinComb, compArr, 1);
-          findBlockingNumber(playerWinComb, playerArr, 1);
           compResponse("o");
         }
       }
@@ -171,7 +169,7 @@ function compResponse(sPlayer){
       fBlock = cBlock;
       var searchVal = searchMatchNumber(playerWinComb, Number(cBlock));
       playerWinComb = searchVal;
-      findBlockingNumber(compWinComb, compArr, 1);
+      findBlockingNumber(compWinComb, compArr,1);
     }else{
       if (fBlock != undefined) {
         compArr.push(fBlock);
@@ -260,27 +258,40 @@ function drawLine(arr){
 // arr - remaining win combinations array , pArr - array of numbers used by player.
 // opt - if 0 selected than fuction is finding blocking number
 // opt - if 1 selected than function is checking if user has winning combination
-function findBlockingNumber(arr, pArr, opt) {
-  var combArr = arr;
-  var playerArrComb = pArr;
+function findBlockingNumber(arr, pArr, opt,turn) {
+  this.combArr = arr;
+  this.playerArrComb = pArr;
+  this.turn = turn;
   var t = 0;
-  for (var i = 0; i < combArr.length; i++) {
-    t = combArr[i].filter(function(e) {
+  for (var i = 0; i < this.combArr.length; i++) {
+    t = this.combArr[i].filter(function(e) {
       return this.indexOf(e) < 0;
-    }, playerArrComb);
+    }, this.playerArrComb);
     if (opt === 0) {
       if (t.length === 1) {
         return t[0];
       }
     }
     if (opt === 1) {
-      if (t.length === 0 && combArr[i].length === 3) {
-        var temp = combArr[i].slice();
+      if (t.length === 0 && this.combArr[i].length === 3) {
+        var temp = this.combArr[i].slice();
         for (var j = 0; j < temp.length; j++) {
           $("#squareNr" + temp[j]).removeClass("containerColor").addClass("containerColor selectedPlayer");
         }
         drawLine(temp);
         allNumbers.fill(0);
+        if(this.turn === "x"){
+          scoreX++;
+        }else if( this.turn === "o"){
+          scoreO++;
+        }else if(this.turn == undefined){
+          if(player === "x"){
+            scoreO++;
+          }else{
+            scoreX++;
+          }
+        }
+        $("#score").html("x   " + scoreX + " : " + scoreO + "   o");
       }
     }
   }
