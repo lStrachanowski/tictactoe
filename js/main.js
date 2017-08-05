@@ -83,7 +83,6 @@ $(document).ready(function() {
     // Is pushing clicked Id number to playerArr, which is storing ids clicked by player.
     currIdNum = (this.id).split("");
     currNum = Number(currIdNum[currIdNum.length - 1]);
-    console.log(currNum);
     if (allNumbers.indexOf(currNum) != -1) {
       // Is displaying x or o on the board.
       if (player === "x") {
@@ -144,7 +143,6 @@ function compResponse(sPlayer) {
     }
   }
   if (currNum != 5 && playerArr.length == 1) {
-
     // Level hard
     if (selectedLevel === "hard") {
       var searchVal = searchMatchNumber(playerWinComb, Number(5));
@@ -212,7 +210,6 @@ function compResponse(sPlayer) {
         fBlock = fNum;
       }
     }
-
     if (this.selectedPlayer === "x") {
       $("#squareNr" + fBlock).html("o");
       turn = "x";
@@ -220,6 +217,9 @@ function compResponse(sPlayer) {
       $("#squareNr" + fBlock).html("x");
       turn = "o";
     }
+  }
+  if(playerWinComb.length == 0 && compWinComb.length == 0){
+    $("#gameOptionsContainer").fadeIn(1500).removeClass("boardContainerHide");
   }
 }
 
@@ -316,6 +316,7 @@ function findBlockingNumber(arr, pArr, opt, turn) {
         $("#gameOptionsContainer").fadeIn(1500).removeClass("boardContainerHide");
       }
     }
+
   }
 }
 
