@@ -93,9 +93,9 @@ $(document).ready(function() {
      $("#new-link-line").remove();
      $("#boardContainer").fadeOut(500).addClass("boardContainerHide");
      $("#score").fadeOut(500).addClass("boardContainerHide");
-     $("#displayMessage").fadeOut(500).addClass("boardContainerHide");
      $("#gameOptionsContainer").fadeOut(500).addClass("boardContainerHide");
-     $("#levelBox").show();
+     $("#displayMessage").fadeOut(500).addClass("boardContainerHide");
+     $("#levelBox").fadeIn(1700).show();
      $("#displayMessage").html(' Play as:<div class="selectPosition"><div class="selectPlayer" id="playerX">x</div><div class="selectPlayer" id="playerO">o</div></div>');
   });
 
