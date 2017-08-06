@@ -39,7 +39,7 @@ $(document).ready(function() {
   });
 
   // selecting x as player singn
-  $("#playerX").click(function() {
+  $(document).on('click',"#playerX", function() {
     $("#boardContainer").fadeIn(1500).removeClass("boardContainerHide");
     $("#score").slideDown(500).removeClass("boardContainerHide");
     player = "x";
@@ -49,7 +49,7 @@ $(document).ready(function() {
   });
 
   // selecting o as player singn
-  $("#playerO").click(function() {
+  $(document).on('click',"#playerO", function() {
     $("#boardContainer").fadeIn(1500).removeClass("boardContainerHide");
     $("#score").slideDown(500).removeClass("boardContainerHide");
     player = "o";
@@ -74,8 +74,29 @@ $(document).ready(function() {
     $("#gameOptionsContainer").fadeOut(500).addClass("boardContainerHide");
   });
 
-    $("#reset").click(function() {
-
+  $("#reset").click(function() {
+    scoreX = 0;
+    scoreO = 0;
+    $("#score").html("x   " + scoreX + " : " + scoreO + "   o");
+    playerArr = [];
+    compArr = [];
+    turn = "";
+    $(".containerColor").each(function(){
+      $("#" + this.id).html("");
+      $("#" + this.id).removeClass("selectedPlayer");
+    });
+    $("#new-link-line").remove();
+    allNumbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    playerWinComb = winCombinations.slice("");
+    compWinComb = winCombinations.slice("");
+    turn = player;
+     $("#new-link-line").remove();
+     $("#boardContainer").fadeOut(500).addClass("boardContainerHide");
+     $("#score").fadeOut(500).addClass("boardContainerHide");
+     $("#displayMessage").fadeOut(500).addClass("boardContainerHide");
+     $("#gameOptionsContainer").fadeOut(500).addClass("boardContainerHide");
+     $("#levelBox").show();
+     $("#displayMessage").html(' Play as:<div class="selectPosition"><div class="selectPlayer" id="playerX">x</div><div class="selectPlayer" id="playerO">o</div></div>');
   });
 
 
@@ -220,6 +241,7 @@ function compResponse(sPlayer) {
   }
   if(playerWinComb.length == 0 && compWinComb.length == 0){
     $("#gameOptionsContainer").fadeIn(1500).removeClass("boardContainerHide");
+    $("#message").html("Tie!");
   }
 }
 
@@ -303,16 +325,21 @@ function findBlockingNumber(arr, pArr, opt, turn) {
         allNumbers.fill(0);
         if (this.turn === "x") {
           scoreX++;
+          $("#message").html("x  won!");
         } else if (this.turn === "o") {
           scoreO++;
+          $("#message").html("o  won!");
         } else if (this.turn == undefined) {
           if (player === "x") {
             scoreO++;
+            $("#message").html("o  won!");
           } else {
+            $("#message").html("x  won!");
             scoreX++;
           }
         }
         $("#score").html("x   " + scoreX + " : " + scoreO + "   o");
+
         $("#gameOptionsContainer").fadeIn(1500).removeClass("boardContainerHide");
       }
     }
