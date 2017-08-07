@@ -14,7 +14,12 @@ body {
   -ms-transform-origin: top left;
   transform-origin: top left;
 }
-
+.no-copy {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 .containerColor {
   height: 20vh;
   display: flex;
